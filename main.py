@@ -1,34 +1,44 @@
+from flask import Flask, jsonify, request
+from hardware_abstraction_layer.arduino_interface import ArduinoInterface
+from hardware_abstraction_layer.arduino_interface import MockArduinoInterface
+
+app = Flask(__name__)
+
+# Initialize the hardware interface
 try:
-    from hardware_abstraction_layer.arduino_interface import ArduinoInterface
-    MOCK_MODE = False
-except ImportError:
-    MOCK_MODE = True
+    arduino = ArduinoInterface(port='/dev/ttyUSB0')
+except Exception as e:
+    print(f"Using MockArduinoInterface due to error: {e}")
+    arduino = MockArduinoInterface(port='/dev/ttyUSB0')
 
-class MockArduinoInterface:
-    """Mock ArduinoInterface for testing without a physical device."""
-    def __init__(self, port: str, baud_rate: int = 9600):
-        print(f"MockArduinoInterface initialized on port {port} with baud_rate {baud_rate}")
+@app.route("/sensor/<sensor_type>", methods=["GET"])
+def get_sensor_data(sensor_type):
+    """
+    API endpoint to get sensor data.
+    :param sensor_type: Type of sensor to read (e.g., 'temperature').
+    :return: Sensor value as JSON.
+    """
+    try:
+        value = arduino.read_sensor(sensor_type)
+        return jsonify({"sensor": sensor_type, "value": value}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-    def read_sensor(self, sensor_type: str) -> float:
-        print(f"Mock: Reading sensor '{sensor_type}'")
-        return 25.5  # Example mock value for temperature
-
-    def write_actuator(self, actuator_type: str, value: float) -> None:
-        print(f"Mock: Setting actuator '{actuator_type}' to value {value}")
-
-def main():
-    # Use mock interface if in testing mode
-    Interface = MockArduinoInterface if MOCK_MODE else ArduinoInterface
-
-    # Initialize the interface
-    arduino = Interface(port='/dev/ttyUSB0')
-
-    # Test: Read a sensor
-    temperature = arduino.read_sensor('temperature')
-    print(f"Temperature: {temperature} °C")
-
-    # Test: Control an actuator
-    arduino.write_actuator('pump', 1)
+@app.route("/actuator/<actuator_type>", methods=["POST"])
+def control_actuator(actuator_type):
+    """
+    API endpoint to control an actuator.
+    :param actuator_type: Type of actuator to control (e.g., 'pump').
+    :body param value: Value to set (e.g., 1 for ON, 0 for OFF).
+    :return: Status message as JSON.
+    """
+    try:
+        data = request.json
+        value = data.get("value")
+        arduino.write_actuator(actuator_type, value)
+        return jsonify({"actuator": actuator_type, "status": "success", "value": value}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    main()
+    app.run(host="0.0.0.0", port=5000)
