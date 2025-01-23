@@ -1,0 +1,25 @@
+{
+    "profile_name": "Tomatoes_Growth_Stage_1",
+    "parameters": {
+      "soil_humidity": {
+        "min": 40,
+        "max": 60
+      },
+      "temperature": {
+        "min": 20,
+        "max": 25
+      },
+      "ph_value": {
+        "min": 6.0,
+        "max": 6.5
+      },
+      "light": {
+        "duration_hours": 12,
+        "intensity_lux": 10000
+      },
+      "air_quality": {
+        "co2_ppm": 400,
+        "ventilation": "enabled"
+      }
+    }
+  }
