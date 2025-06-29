@@ -1,4 +1,4 @@
-import SerialPort from 'serialport';
+import { SerialPort } from 'serialport';
 import fs from 'fs';
 import path from 'path';
 
@@ -80,7 +80,8 @@ class SensorController {
   constructor() {
     // Initialize connection to Arduino/microcontroller
     const portPath = '/dev/ttyUSB0'; // Or COM3 on Windows
-    this.serialPort = new SerialPort(portPath, {
+    this.serialPort = new SerialPort({
+      path: portPath,
       baudRate: 9600,
     });
 
