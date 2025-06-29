@@ -1,0 +1,66 @@
+{
+  "name": "Boletus Mushroom",
+  "scientificName": "Boletus edulis",
+  "thresholds": {
+    "temperature": {
+      "min": 12,
+      "max": 25,
+      "optimal": 18,
+      "unit": "°C"
+    },
+    "humidity": {
+      "min": 80,
+      "max": 95,
+      "optimal": 90,
+      "unit": "%"
+    },
+    "light": {
+      "min": 500,
+      "max": 1000,
+      "optimal": 800,
+      "unit": "lux"
+    },
+    "soilMoisture": {
+      "min": 60,
+      "max": 90,
+      "optimal": 75,
+      "unit": "%"
+    }
+  },
+  "growthStages": {
+    "seedling": {
+      "duration": 14,
+      "modifiers": {
+        "darkness": "required",
+        "substrate": "forest soil with decomposed organic matter",
+        "note": "This represents spore germination"
+      }
+    },
+    "vegetative": {
+      "duration": 30,
+      "modifiers": {
+        "temperature": "stable around 18°C",
+        "airExchange": "moderate",
+        "moisture": "consistently high",
+        "note": "This represents mycelium colonization"
+      }
+    },
+    "flowering": {
+      "duration": 10,
+      "modifiers": {
+        "shock": "slight temperature drop can trigger",
+        "light": "low indirect light",
+        "note": "This represents primordia (pinhead) formation"
+      }
+    },
+    "fruiting": {
+      "duration": 7,
+      "modifiers": {
+        "humidity": "high (95%)",
+        "airflow": "gentle to avoid rot",
+        "harvestWindow": "short – pick before caps flatten",
+        "note": "This is the fruiting body maturation"
+      }
+    }
+  }
+}
