@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      target: builder
+    ports:
+      - "3001:3001"
+      - "5173:5173"  # Vite dev server
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - VITE_API_URL=http://localhost:3001
+    command: npm run dev
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0  # Arduino serial port
+    privileged: true  # Required for hardware access
+
+  # Add more services as needed (e.g., database, redis, etc.) 

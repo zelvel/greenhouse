@@ -1,0 +1,68 @@
+{
+  "name": "Bell Pepper",
+  "scientificName": "Capsicum annuum",
+  "thresholds": {
+    "temperature": {
+      "min": 20,
+      "max": 30,
+      "optimal": 25,
+      "unit": "°C"
+    },
+    "humidity": {
+      "min": 50,
+      "max": 70,
+      "optimal": 60,
+      "unit": "%"
+    },
+    "soilMoisture": {
+      "min": 45,
+      "max": 65,
+      "optimal": 55,
+      "unit": "%"
+    },
+    "light": {
+      "min": 4000,
+      "max": 8000,
+      "optimal": 6000,
+      "unit": "lux"
+    }
+  },
+  "growthStages": {
+    "seedling": {
+      "duration": 14,
+      "modifiers": {
+        "temperature": { "optimal": 23 },
+        "humidity": { "optimal": 65 },
+        "soilMoisture": { "optimal": 60 },
+        "light": { "optimal": 5000 }
+      }
+    },
+    "vegetative": {
+      "duration": 35,
+      "modifiers": {
+        "temperature": { "optimal": 25 },
+        "humidity": { "optimal": 60 },
+        "soilMoisture": { "optimal": 55 },
+        "light": { "optimal": 6000 }
+      }
+    },
+    "flowering": {
+      "duration": 21,
+      "modifiers": {
+        "temperature": { "optimal": 24 },
+        "humidity": { "optimal": 55 },
+        "soilMoisture": { "optimal": 50 },
+        "light": { "optimal": 7000 }
+      }
+    },
+    "fruiting": {
+      "duration": 45,
+      "modifiers": {
+        "temperature": { "optimal": 26 },
+        "humidity": { "optimal": 60 },
+        "soilMoisture": { "optimal": 55 },
+        "light": { "optimal": 7500 }
+      }
+    }
+  }
+} 
