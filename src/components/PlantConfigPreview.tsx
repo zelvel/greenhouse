@@ -136,7 +136,7 @@ const InfoCard: React.FC<{ title: string; children: React.ReactNode; icon?: Reac
   </Card>
 );
 
-const ThresholdCard: React.FC<{ sensor: string; values: any; color: string }> = ({ sensor, values, color }) => (
+const ThresholdCard: React.FC<{ sensor: string; values: { min: number; max: number; optimal: number; unit: string }; color: string }> = ({ sensor, values, color }) => (
   <Card elevation={2} sx={{ height: '100%' }}>
     <CardContent sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -184,7 +184,7 @@ const ThresholdCard: React.FC<{ sensor: string; values: any; color: string }> = 
   </Card>
 );
 
-const GrowthStageCard: React.FC<{ stage: string; data: any; color: string }> = ({ stage, data, color }) => (
+const GrowthStageCard: React.FC<{ stage: string; data: { duration: number; modifiers: Record<string, { optimal: number; unit: string }> }; color: string }> = ({ stage, data, color }) => (
   <Card elevation={2} sx={{ height: '100%' }}>
     <CardContent sx={{ p: 3 }}>
       <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
@@ -212,7 +212,7 @@ const GrowthStageCard: React.FC<{ stage: string; data: any; color: string }> = (
       </Typography>
       
       <Box sx={{ space: 1 }}>
-        {Object.entries(data.modifiers).map(([sensor, values]: [string, any]) => (
+        {Object.entries(data.modifiers).map(([sensor, values]: [string, { optimal: number; unit: string }]) => (
           <Box key={sensor} sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', p: 2, bgcolor: 'grey.50', borderRadius: 1, mb: 1 }}>
             <Typography variant="body2" color="text.secondary" sx={{ textTransform: 'capitalize' }}>
               {sensor}
@@ -353,7 +353,7 @@ export const PlantConfigPreview: React.FC<PlantConfigPreviewProps> = ({ plant, o
         Sensor Thresholds
       </Typography>
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        {Object.entries(plant.thresholds).map(([sensor, values], index) => {
+        {Object.entries(plant.thresholds).map(([sensor, values]) => {
           const color = thresholdColors[sensor as keyof typeof thresholdColors];
           return (
             <Grid item xs={12} sm={6} md={4} key={sensor}>
@@ -375,9 +375,9 @@ export const PlantConfigPreview: React.FC<PlantConfigPreviewProps> = ({ plant, o
         {Object.entries(plant.growthStages).map(([stage, data], index) => (
           <Grid item xs={12} sm={6} md={4} key={stage}>
             <GrowthStageCard 
-              stage={stage} 
-              data={data} 
-              color={growthStageColors[index % growthStageColors.length]}
+              stage={stage}
+              data={data}
+              color={growthStageColors[index % growthStageColors.length] ?? '#666'}
             />
           </Grid>
         ))}

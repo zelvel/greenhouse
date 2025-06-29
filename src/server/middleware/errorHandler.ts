@@ -1,12 +1,11 @@
-import type { Request, Response, NextFunction } from 'express';
-import { AppError, handleError, isOperational } from '../../utils/errorHandler';
-import logger from '../../utils/logger';
+import type { Request, Response } from 'express';
+import { handleError, isOperational } from '../utils/errorHandler.js';
+import logger from '../utils/logger.js';
 
 export const errorHandler = (
   error: Error,
   req: Request,
-  res: Response,
-  next: NextFunction
+  res: Response
 ) => {
   const appError = handleError(error);
 

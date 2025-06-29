@@ -1,0 +1,44 @@
+{
+  "name": "Oregano",
+  "scientificName": "Origanum vulgare",
+  "thresholds": {
+    "temperature": { "min": 10, "max": 30, "optimal": 21, "unit": "°C" },
+    "humidity": { "min": 30, "max": 70, "optimal": 50, "unit": "%" },
+    "light": { "min": 15000, "max": 30000, "optimal": 25000, "unit": "lux" },
+    "soilMoisture": { "min": 30, "max": 60, "optimal": 45, "unit": "%" }
+  },
+  "growthStages": {
+    "seedling": {
+      "duration": 21,
+      "modifiers": {
+        "temperature": "20–22°C for germination",
+        "light": "bright indirect or filtered light",
+        "substrate": "well-drained, sandy soil with pH 6.0–8.0"
+      }
+    },
+    "vegetative": {
+      "duration": 45,
+      "modifiers": {
+        "pruning": "light trimming promotes bushy growth",
+        "fertilization": "light feeding, avoid high nitrogen",
+        "spacing": "20–30 cm between plants"
+      }
+    },
+    "flowering": {
+      "duration": 20,
+      "modifiers": {
+        "note": "can be allowed for pollinators or trimmed to prolong leaf harvest",
+        "light": "full sun to partial shade",
+        "temperature": "maintain optimal to prevent bolting"
+      }
+    },
+    "fruiting": {
+      "duration": 15,
+      "modifiers": {
+        "harvest": "best flavor just before flowering",
+        "drying": "hang in shaded, dry area for preservation",
+        "note": "oregano rarely grown for seeds; focus on leaf harvest"
+      }
+    }
+  }
+}

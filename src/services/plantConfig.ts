@@ -1,15 +1,25 @@
 import type { PlantProfile } from '@/types/plants';
-import { plantProfiles } from '@/config/plants';
 
 class PlantConfigService {
-  private profiles: Record<string, PlantProfile>;
+  private profiles: Record<string, PlantProfile> = {};
 
   constructor() {
-    this.profiles = this.loadFromDisk();
+    // Load from backend on initialization
+    this.loadFromServer();
   }
 
-  private loadFromDisk(): Record<string, PlantProfile> {
-    return plantProfiles;
+  private async loadFromServer() {
+    try {
+      const response = await fetch('/api/plants');
+      if (response.ok) {
+        this.profiles = await response.json();
+      } else {
+        this.profiles = {};
+      }
+    } catch (error) {
+      console.error('Error loading plant profiles:', error);
+      this.profiles = {};
+    }
   }
 
   getAllPlants(): PlantProfile[] {
@@ -17,86 +27,44 @@ class PlantConfigService {
   }
 
   getPlant(name: string): PlantProfile | undefined {
-    // First try to find by exact key match
-    if (this.profiles[name]) {
-      return this.profiles[name];
-    }
-    
-    // If not found, try to find by display name (case-insensitive)
     const normalizedName = name.toLowerCase();
     for (const [key, plant] of Object.entries(this.profiles)) {
-      if (plant.name.toLowerCase() === normalizedName) {
+      if (key === normalizedName || plant.name.toLowerCase() === normalizedName) {
         return plant;
       }
     }
-    
-    // If still not found, try to find by generated key
-    const generatedKey = this.generateKey(name);
-    if (this.profiles[generatedKey]) {
-      return this.profiles[generatedKey];
-    }
-    
     return undefined;
   }
 
-  addPlant(plant: PlantProfile): void {
+  async addPlant(plant: PlantProfile): Promise<void> {
     const key = this.generateKey(plant.name);
     this.profiles[key] = plant;
-    this.saveToDisk();
+    await this.saveToServer();
   }
 
-  updatePlant(key: string, plant: PlantProfile): void {
-    // Find the existing plant by name and update it
-    const existingPlant = this.getPlant(key);
-    if (existingPlant) {
-      // Find the actual key in the profiles
-      const actualKey = Object.keys(this.profiles).find(k => 
-        this.profiles[k] && this.profiles[k].name === existingPlant.name
-      );
-      if (actualKey) {
-        this.profiles[actualKey] = plant;
-        this.saveToDisk();
-      }
-    }
+  async updatePlant(key: string, plant: PlantProfile): Promise<void> {
+    this.profiles[key] = plant;
+    await this.saveToServer();
   }
 
-  deletePlant(key: string): void {
-    // Find the existing plant by name and delete it
-    const existingPlant = this.getPlant(key);
-    if (existingPlant) {
-      // Find the actual key in the profiles
-      const actualKey = Object.keys(this.profiles).find(k => 
-        this.profiles[k] && this.profiles[k].name === existingPlant.name
-      );
-      if (actualKey) {
-        delete this.profiles[actualKey];
-        this.saveToDisk();
-      }
-    }
+  async deletePlant(key: string): Promise<void> {
+    delete this.profiles[key];
+    await this.saveToServer();
   }
 
   private generateKey(name: string): string {
     return name.toLowerCase().replace(/[^a-z0-9]/g, '');
   }
 
-  private async saveToDisk(): Promise<void> {
+  private async saveToServer(): Promise<void> {
     try {
-      const content = `import type { PlantProfile } from '@/types/plants';
-
-// Default plant profiles
-export const plantProfiles: Record<string, PlantProfile> = ${JSON.stringify(this.profiles, null, 2)};`;
-
-      // Use the Fetch API to send the content to your backend
-      const response = await fetch('/api/config/save', {
+      const response = await fetch('/api/plants', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ content, path: 'src/config/plants/index.ts' }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(this.profiles),
       });
-
       if (!response.ok) {
-        throw new Error('Failed to save configuration');
+        throw new Error('Failed to save plant configuration');
       }
     } catch (error) {
       console.error('Error saving plant configuration:', error);

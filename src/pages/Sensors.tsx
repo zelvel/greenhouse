@@ -69,7 +69,14 @@ export const Sensors = () => {
   const [selectedSensor, setSelectedSensor] = useState<SensorType>('temperature');
   const queryClient = useQueryClient();
 
-  const { data: reading, isLoading, error } = useSensorReading(selectedSensor);
+  const sensorReadings: Record<SensorType, ReturnType<typeof useSensorReading>> = {
+    temperature: useSensorReading('temperature'),
+    humidity: useSensorReading('humidity'),
+    light: useSensorReading('light'),
+    soil_moisture: useSensorReading('soil_moisture'),
+    co2: useSensorReading('co2'),
+    ph: useSensorReading('ph'),
+  };
 
   const handleRefresh = () => {
     queryClient.invalidateQueries({ queryKey: ['sensor', selectedSensor] });
@@ -125,7 +132,8 @@ export const Sensors = () => {
       <div className="space-y-6 mb-8">
         <Grid container spacing={3}>
           {Object.entries(sensorConfig).map(([type, config]) => {
-            const sensorReading = useSensorReading(type as SensorType);
+            const sensorType = type as SensorType;
+            const sensorReading = sensorReadings[sensorType];
             const isSelected = selectedSensor === type;
             
             return (
@@ -142,7 +150,7 @@ export const Sensors = () => {
                       transform: 'translateY(-2px)',
                     }
                   }}
-                  onClick={() => setSelectedSensor(type as SensorType)}
+                  onClick={() => setSelectedSensor(sensorType)}
                 >
                   <CardContent sx={{ p: 3, textAlign: 'center' }}>
                     {/* Sensor Icon and Name */}
@@ -184,8 +192,8 @@ export const Sensors = () => {
                         </Typography>
                         
                         <Chip 
-                          label={getStatusText(sensorReading.data.value, type as SensorType)} 
-                          color={getStatusColor(sensorReading.data.value, type as SensorType)} 
+                          label={getStatusText(sensorReading.data.value, sensorType)} 
+                          color={getStatusColor(sensorReading.data.value, sensorType)} 
                           size="small" 
                           variant="outlined"
                           sx={{ mb: 1 }}
@@ -236,19 +244,19 @@ export const Sensors = () => {
                     Current Reading
                   </Typography>
                   
-                  {isLoading ? (
+                  {sensorReadings[selectedSensor].isLoading ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
                       <CircularProgress />
                     </Box>
-                  ) : error ? (
+                  ) : sensorReadings[selectedSensor].error ? (
                     <Alert severity="error">
                       Failed to load sensor data:{' '}
-                      {error instanceof Error ? error.message : 'Unknown error'}
+                      {sensorReadings[selectedSensor].error instanceof Error ? sensorReadings[selectedSensor].error.message : 'Unknown error'}
                     </Alert>
-                  ) : reading ? (
+                  ) : sensorReadings[selectedSensor].data ? (
                     <Box>
                       <Typography variant="h3" component="div" color="text.primary" sx={{ fontWeight: 'bold' }}>
-                        {reading.value.toFixed(1)}
+                        {sensorReadings[selectedSensor].data.value.toFixed(1)}
                         <Typography
                           component="span"
                           variant="h5"
@@ -260,8 +268,8 @@ export const Sensors = () => {
                       </Typography>
                       
                       <Chip 
-                        label={getStatusText(reading.value, selectedSensor)} 
-                        color={getStatusColor(reading.value, selectedSensor)} 
+                        label={getStatusText(sensorReadings[selectedSensor].data.value, selectedSensor)} 
+                        color={getStatusColor(sensorReadings[selectedSensor].data.value, selectedSensor)} 
                         sx={{ mt: 2 }}
                       />
                       
@@ -270,16 +278,16 @@ export const Sensors = () => {
                         color="text.secondary"
                         sx={{ mt: 2 }}
                       >
-                        Last updated: {new Date(reading.timestamp).toLocaleString()}
+                        Last updated: {new Date(sensorReadings[selectedSensor].data.timestamp).toLocaleString()}
                       </Typography>
                       
-                      {reading.metadata && (
+                      {sensorReadings[selectedSensor].data.metadata && (
                         <Box mt={2} sx={{ textAlign: 'left' }}>
                           <Typography variant="subtitle2" color="text.secondary">
-                            Raw Value: {reading.metadata.raw_value.toFixed(2)}
+                            Raw Value: {sensorReadings[selectedSensor].data.metadata.raw_value.toFixed(2)}
                           </Typography>
                           <Typography variant="subtitle2" color="text.secondary">
-                            Calibration: {reading.metadata.calibration}
+                            Calibration: {sensorReadings[selectedSensor].data.metadata.calibration}
                           </Typography>
                         </Box>
                       )}

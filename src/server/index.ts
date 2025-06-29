@@ -3,10 +3,11 @@ import cors from 'cors';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import configRouter from './api/config.js';
-import { rateLimiter } from './middleware/rateLimit';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-import healthRouter from './api/health';
-import logger from '../utils/logger';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import healthRouter from './api/health.js';
+import logger from './utils/logger.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -54,7 +55,7 @@ app.use('/api', (req, res, next) => {
 });
 
 // API Routes
-app.use('/api/config', configRouter);
+app.use('/api', configRouter);
 
 // System status endpoint
 app.get('/status', (_req, res) => {
@@ -168,6 +169,28 @@ app.post('/actuator/:type', (req, res) => {
     timestamp: new Date().toISOString()
   });
 });
+
+// Swagger setup
+const swaggerDefinition = {
+  openapi: '3.0.0',
+  info: {
+    title: 'GreenhouZ API',
+    version: '1.0.0',
+    description: 'API documentation for GreenhouZ greenhouse control system',
+  },
+  servers: [
+    { url: 'http://localhost:3001/api' }
+  ],
+};
+
+const options = {
+  swaggerDefinition,
+  apis: ['./src/server/api/config.ts'],
+};
+
+const swaggerSpec = swaggerJSDoc(options);
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Serve index.html for all other routes (SPA)
 app.get('*', (_req, res) => {

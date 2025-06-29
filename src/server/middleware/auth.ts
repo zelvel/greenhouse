@@ -1,7 +1,7 @@
 import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { AppError } from '../../utils/errorHandler';
-import logger from '../../utils/logger';
+import { AppError } from '../utils/errorHandler.js';
+import logger from '../utils/logger.js';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-jwt-secret-here';
 
@@ -12,6 +12,7 @@ interface JWTPayload {
   exp: number;
 }
 
+/* eslint-disable @typescript-eslint/no-namespace */
 declare global {
   namespace Express {
     interface Request {
@@ -19,6 +20,7 @@ declare global {
     }
   }
 }
+/* eslint-enable @typescript-eslint/no-namespace */
 
 export const generateToken = (userId: string, role: string): string => {
   return jwt.sign(
@@ -63,38 +65,28 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
 
 export const authorize = (...roles: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    try {
-      if (!req.user) {
-        throw new AppError('User not authenticated', 'NOT_AUTHENTICATED', 401);
-      }
-
-      if (!roles.includes(req.user.role)) {
-        throw new AppError('Insufficient permissions', 'INSUFFICIENT_PERMISSIONS', 403);
-      }
-
-      next();
-    } catch (error) {
-      next(error);
+    if (!req.user) {
+      return next(new AppError('User not authenticated', 'NOT_AUTHENTICATED', 401));
     }
+    if (!roles.includes(req.user.role)) {
+      return next(new AppError('Insufficient permissions', 'INSUFFICIENT_PERMISSIONS', 403));
+    }
+    next();
   };
 };
 
 export const refreshToken = (req: Request, res: Response) => {
-  try {
-    const { user } = req;
-    if (!user) {
-      throw new AppError('User not authenticated', 'NOT_AUTHENTICATED', 401);
-    }
-
-    const newToken = generateToken(user.userId, user.role);
-    
-    logger.info('Token refreshed for user:', {
-      userId: user.userId,
-      role: user.role,
-    });
-
-    res.json({ token: newToken });
-  } catch (error) {
-    throw error;
+  const { user } = req;
+  if (!user) {
+    throw new AppError('User not authenticated', 'NOT_AUTHENTICATED', 401);
   }
+
+  const newToken = generateToken(user.userId, user.role);
+  
+  logger.info('Token refreshed for user:', {
+    userId: user.userId,
+    role: user.role,
+  });
+
+  res.json({ token: newToken });
 }; 

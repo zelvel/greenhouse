@@ -1,7 +1,7 @@
 {
   "name": "greenhouse",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:client\" \"npm run dev:server\"",
@@ -11,7 +11,7 @@
     "build:client": "tsc && vite build",
     "build:server": "tsc -p tsconfig.server.json",
     "start": "node dist/server/index.js",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -34,6 +34,8 @@
     "react-router-dom": "6.22.0",
     "recharts": "2.12.0",
     "serialport": "12.0.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "winston": "3.11.0"
   },
   "devDependencies": {
@@ -53,6 +55,8 @@
     "@types/recharts": "1.8.29",
     "@types/serialport": "8.0.5",
     "@types/supertest": "6.0.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "@vitejs/plugin-react": "4.2.1",
     "autoprefixer": "10.4.17",
     "concurrently": "8.2.2",
@@ -70,6 +74,7 @@
     "tailwindcss": "3.4.1",
     "terser": "5.40.0",
     "ts-jest": "29.1.2",
+    "ts-node": "^10.9.2",
     "tsx": "4.19.4",
     "typescript": "5.2.2",
     "typescript-eslint": "8.30.1",

@@ -148,11 +148,11 @@ export const AddPlantForm: React.FC<AddPlantFormProps> = ({ initialData, onSubmi
     const keys = path.split('.');
     setFormData(prev => {
       const newData = { ...prev };
-      let current = newData as Record<string, any>;
+      let current = newData as Record<string, unknown>;
 
       for (const key of keys.slice(0, -1)) {
         if (current[key] === undefined) break;
-        current = current[key] as Record<string, any>;
+        current = current[key] as Record<string, unknown>;
       }
 
       const finalKey = keys[keys.length - 1];

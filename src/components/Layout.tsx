@@ -18,6 +18,7 @@ import {
   Air,
   Thermostat,
   LocalFlorist,
+  Info,
 } from '@mui/icons-material';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 
@@ -29,6 +30,7 @@ const menuItems = [
   { text: 'Actuators', icon: <Air />, path: '/actuators' },
   { text: 'Analytics', icon: <ShowChart />, path: '/analytics' },
   { text: 'Settings', icon: <Settings />, path: '/settings' },
+  { text: 'API Documentation', icon: <Info />, path: '/api-docs', external: true },
 ];
 
 export const Layout = () => {
@@ -69,8 +71,13 @@ export const Layout = () => {
           return (
             <ListItemButton
               key={item.text}
-              component={Link}
-              to={item.path}
+              component={item.external ? 'a' : Link}
+              href={item.external ? item.path : undefined}
+              to={!item.external ? item.path : undefined}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener noreferrer' : undefined}
+              selected={location.pathname === item.path}
+              onClick={() => setMobileOpen(false)}
               sx={{
                 bgcolor: isActive ? 'primary.light' : 'transparent',
                 color: isActive ? 'primary.contrastText' : 'text.primary',

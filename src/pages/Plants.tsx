@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { PlantProfile } from '@/types/plants';
-import { plantConfigService } from '@/services/plantConfig';
 import { useSensorReading } from '@/hooks/useSensorData';
 import { CircularProgress, Alert, Card, CardContent, Grid, Chip, Box, Button } from '@mui/material';
 import { Thermostat, WaterDrop, WbSunny, Edit, Delete, Add } from '@mui/icons-material';
@@ -73,18 +72,26 @@ export const PlantsPage: React.FC = () => {
   }), [temperatureQuery, humidityQuery, lightQuery]);
 
   useEffect(() => {
-    // Load plants only once on mount
-    const allPlants = plantConfigService.getAllPlants();
-    setPlants(allPlants);
-  }, []); // Empty deps since we only want to load once on mount
+    async function fetchPlants() {
+      const res = await fetch('/api/plants');
+      if (res.ok) {
+        const data = await res.json();
+        setPlants(Object.values(data));
+      } else {
+        setPlants([]);
+      }
+    }
+    fetchPlants();
+  }, []);
 
   const handleDelete = async (e: React.MouseEvent, name: string) => {
     e.stopPropagation(); // Prevent event bubbling
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
-        await plantConfigService.deletePlant(name);
-        // Update plants state after deletion
-        setPlants(plantConfigService.getAllPlants());
+        await fetch(`/api/plants/${encodeURIComponent(name)}`, {
+          method: 'DELETE'
+        });
+        setPlants(plants.filter(plant => plant.name !== name));
       } catch (error) {
         console.error('Error deleting plant:', error);
         alert('Failed to delete plant. Please try again.');

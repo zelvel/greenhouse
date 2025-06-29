@@ -167,7 +167,7 @@ class SensorController {
 
   private setupSerialConnection() {
     this.serialPort.on('open', () => {
-      console.log('Serial port connection established');
+      // Serial port connection established
       this.startSensorPolling();
     });
 

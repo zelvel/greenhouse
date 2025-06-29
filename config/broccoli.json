@@ -1,0 +1,64 @@
+{
+  "name": "Broccoli",
+  "scientificName": "Brassica oleracea var. italica",
+  "thresholds": {
+    "temperature": {
+      "min": 10,
+      "max": 24,
+      "optimal": 18,
+      "unit": "°C"
+    },
+    "humidity": {
+      "min": 50,
+      "max": 85,
+      "optimal": 70,
+      "unit": "%"
+    },
+    "light": {
+      "min": 12000,
+      "max": 20000,
+      "optimal": 16000,
+      "unit": "lux"
+    },
+    "soilMoisture": {
+      "min": 60,
+      "max": 80,
+      "optimal": 70,
+      "unit": "%"
+    }
+  },
+  "growthStages": {
+    "seedling": {
+      "duration": 20,
+      "modifiers": {
+        "temperature": "18–22°C for germination",
+        "light": "bright indirect light",
+        "substrate": "well-drained, fertile seed-starting mix"
+      }
+    },
+    "vegetative": {
+      "duration": 40,
+      "modifiers": {
+        "nutrients": "high nitrogen for leaf development",
+        "spacing": "30–45 cm between plants",
+        "weedControl": "essential for strong root growth"
+      }
+    },
+    "flowering": {
+      "duration": 10,
+      "modifiers": {
+        "temperature": "keep below 24°C to prevent bolting",
+        "light": "full sun preferred",
+        "note": "this phase includes head formation but no true flowers should open"
+      }
+    },
+    "fruiting": {
+      "duration": 15,
+      "modifiers": {
+        "harvest": "cut central head before florets loosen",
+        "followUp": "side shoots may produce smaller heads",
+        "moisture": "consistent watering to prevent bitterness"
+      }
+    }
+  }
+}

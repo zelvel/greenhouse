@@ -1,6 +1,6 @@
 import type { Request, Response } from 'express';
 import rateLimit from 'express-rate-limit';
-import logger from '../../utils/logger';
+import logger from '../utils/logger.js';
 
 // Create rate limiter middleware
 export const rateLimiter = rateLimit({
