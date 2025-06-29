@@ -9,7 +9,11 @@ const config: Config.InitialOptions = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
   },
   transform: {
-    '^.+\\.tsx?$': 'ts-jest',
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: {
+        jsx: 'react-jsx',
+      },
+    }],
   },
   coverageDirectory: 'coverage',
   collectCoverageFrom: [
@@ -17,6 +21,11 @@ const config: Config.InitialOptions = {
     '!src/**/*.d.ts',
     '!src/main.tsx',
     '!src/vite-env.d.ts',
+    '!src/**/*.test.{ts,tsx}',
+    '!src/**/*.spec.{ts,tsx}',
+    '!src/**/__tests__/**',
+    '!src/pages/**',
+    '!src/components/**',
   ],
   testMatch: [
     '<rootDir>/src/**/__tests__/**/*.{ts,tsx}',

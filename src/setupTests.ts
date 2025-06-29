@@ -1,6 +1,13 @@
 /// <reference types="jest" />
 import '@testing-library/jest-dom';
 
+// Polyfill for TextEncoder in Node.js environment
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
