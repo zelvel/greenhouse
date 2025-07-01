@@ -1,4 +1,7 @@
 import winston from 'winston';
+import { join } from 'path';
+
+const logsDir = process.env.LOGS_DIR || join(__dirname, '../../../logs');
 
 const { combine, timestamp, printf, colorize } = winston.format;
 
@@ -28,8 +31,8 @@ const logger = winston.createLogger({
     logFormat
   ),
   transports: [
-    new winston.transports.File({ filename: 'logs/error.log', level: 'error' }),
-    new winston.transports.File({ filename: 'logs/combined.log' })
+    new winston.transports.File({ filename: join(logsDir, 'error.log'), level: 'error' }),
+    new winston.transports.File({ filename: join(logsDir, 'combined.log') })
   ]
 });
 

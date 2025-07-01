@@ -9,8 +9,8 @@ const __dirname = dirname(__filename);
 
 const router = Router();
 
-const plantsPath = join(__dirname, '../../../config/plants.json');
-const configDir = join(__dirname, '../../../config');
+const configDir = process.env.CONFIG_DIR || join(__dirname, '../../../config');
+const plantsPath = join(configDir, 'plants.json');
 
 /**
  * @swagger
